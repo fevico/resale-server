@@ -9,8 +9,8 @@ export interface ProductDocument extends Document {
     price: number;
     purchasingDate: Date;
     category: string;
-    images: productImage[];
-    thumbnail: string;
+    images?: productImage[];
+    thumbnail?: string;
     description: string;
 }
        
