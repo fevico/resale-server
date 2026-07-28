@@ -6,7 +6,7 @@ type productImage ={ url: string; id: string}
 export interface ProductDocument extends Document {
     owner: Schema.Types.ObjectId;
     name: string;
-    price: number;
+    price: number; 
     purchasingDate: Date;
     category: string;
     images?: productImage[];
@@ -25,11 +25,11 @@ const productSchema = new Schema<ProductDocument>({
         type: Object,
         url: String,
         id: String
-    }], 
+    }],
 
-    thumbnail: { type: String, required: true }
+    thumbnail: { type: String, required: false }
 }, {timestamps: true});
 
 const ProductModel = model<ProductDocument>("Product", productSchema);
 
-export default ProductModel;   
+export default ProductModel;

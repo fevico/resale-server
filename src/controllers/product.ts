@@ -16,8 +16,8 @@ const uploadImage = (filePath: string): Promise<UploadApiResponse> => {
 }
 
 export const listProduct: RequestHandler = async (req, res) => {
-    const { name, description, price, purchasingdate, category } = req.body;
-    const newProduct = new ProductModel({ name, description, price, purchasingdate, category, owner: req.user.id });
+    const { name, description, price, purchasingDate, category } = req.body;
+    const newProduct = new ProductModel({ name, description, price, purchasingDate, category, owner: req.user.id });
     try {
         const {images} = req.files;
         const isMultipleImages = Array.isArray(images)
@@ -65,18 +65,19 @@ export const listProduct: RequestHandler = async (req, res) => {
         await newProduct.save();
         res.status(201).json({message: "Product created successfully", product: newProduct})
     } catch (error) {
-        sendErrorRes(res, "Error saving product", 500);
+        console.log(error)
+        sendErrorRes(res, "Error saving product", 500); 
     }
 }
 
 export const updateProduct: RequestHandler = async (req, res) => {
     const productId = req.params.id;
-    if(isValidObjectId(productId)){
+    if(!isValidObjectId(productId)){
         return sendErrorRes(res, "Invalid product id", 422);
     }
-    const { name, description, price, purchasingdate, category, thumbnail } = req.body;  
+    const { name, description, price, purchasingDate, category, thumbnail } = req.body;  
 
-    const product = await ProductModel.findOneAndUpdate({_id: productId, owner: req.user.id}, { name, description, price, purchasingdate, category }, { new: true });
+    const product = await ProductModel.findOneAndUpdate({_id: productId, owner: req.user.id}, { name, description, price, purchasingDate, category }, { new: true });
     if(!product) return sendErrorRes(res, "Product not found", 404);
 
     if(typeof thumbnail === "string") product.thumbnail = thumbnail;
@@ -138,7 +139,7 @@ export const updateProduct: RequestHandler = async (req, res) => {
 
 export const deleteProduct: RequestHandler = async (req, res) => {
     const productId = req.params.id;
-    if(isValidObjectId(productId)){
+    if(!isValidObjectId(productId)){
         return sendErrorRes(res, "Invalid product id", 422);
     }
 
@@ -175,7 +176,7 @@ export const deleteProductImage: RequestHandler = async (req, res) => {
 
 export const getProductDetail: RequestHandler = async (req, res) => {
     const {id} = req.params;
-    if(isValidObjectId(id)){
+    if(!isValidObjectId(id)){
         return sendErrorRes(res, "Invalid product id", 422);
     }
     const product = await ProductModel.findById(id).populate<{owner: UserDocument}>("owner")
@@ -186,7 +187,7 @@ export const getProductDetail: RequestHandler = async (req, res) => {
         description: product.description,
         price: product.price,
         category: product.category,
-        purchasingdate: product.purchasingDate,
+        date: product.purchasingDate,
         images: product.images?.map(img => img.url) || [],
         thumbnail: product.thumbnail,
         seller: {
@@ -195,6 +196,7 @@ export const getProductDetail: RequestHandler = async (req, res) => {
             avatar: product.owner.avatar?.url
         }
     }})
+
 }
 
 export const getProductByCategory: RequestHandler = async (req, res) => {

@@ -32,7 +32,7 @@ authRouter.post("/sign-in", signIn);
 authRouter.get("/profile", isAuth, sendProfile);
 authRouter.post("/refresh-token", grantAccessToken);
 authRouter.post("/sign-out", isAuth, signOut);
-authRouter.post("/forget-pass", generateForgetPassLink);
+authRouter.post("/forget-password", generateForgetPassLink);
 authRouter.post(
   "/verify-pass-reset-token",
   validate(verifyTokenSchema),
